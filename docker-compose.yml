@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: gaint_interns
+      POSTGRES_USER: gaint
+      POSTGRES_PASSWORD: gaint_local_password
+    ports:
+      - "55432:5432"
+    volumes:
+      - gaint_v8_1_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gaint -d gaint_interns"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  gaint_v8_1_postgres_data:

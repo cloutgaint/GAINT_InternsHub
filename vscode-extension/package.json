@@ -1,0 +1,36 @@
+{
+  "name": "gaint-interns-hub",
+  "displayName": "GAINT Interns Hub",
+  "description": "Automatically connect a GAINT project, validate local work, submit the current task and package the completed project.",
+  "version": "4.1.0",
+  "publisher": "gaint-clout",
+  "license": "UNLICENSED",
+  "files": ["extension.js", "README.md"],
+  "engines": { "vscode": "^1.90.0" },
+  "categories": ["Education", "Testing"],
+  "activationEvents": [
+    "onStartupFinished",
+    "workspaceContains:gaint-project.json"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "gaint.openCurrentTask", "title": "GAINT: Open Current Task" },
+      { "command": "gaint.submitCurrentTask", "title": "GAINT: Submit Current Task" },
+      { "command": "gaint.packageCompletedProject", "title": "GAINT: Package Completed Project" },
+      { "command": "gaint.repairConnection", "title": "GAINT: Repair Project Connection" }
+    ],
+    "configuration": {
+      "title": "GAINT Interns Hub",
+      "properties": {
+        "gaint.showLearningTips": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show short GAINT workflow tips"
+        }
+      }
+    }
+  },
+  "scripts": { "package": "npx @vscode/vsce package" },
+  "devDependencies": { "@types/vscode": "^1.90.0", "@vscode/vsce": "^3.2.1" }
+}
