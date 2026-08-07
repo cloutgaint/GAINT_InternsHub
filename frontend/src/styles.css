@@ -12,11 +12,13 @@ a { color: var(--blue); text-decoration: none; font-weight: 700; }
 .spinner { width: 23px; height: 23px; border: 3px solid #cbd9e7; border-top-color: var(--blue); border-radius: 50%; animation: spin .75s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .brand { display: flex; align-items: center; gap: 12px; color: white; }
+.brand-logo { display: block; width: 185px; height: 58px; object-fit: contain; object-position: left center; border-radius: 8px; }
 .brand-mark { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; color: white; background: linear-gradient(145deg, #3b82f6, #1d4ed8); box-shadow: 0 8px 20px #1e40af4d; }
 .brand span:last-child { display: flex; flex-direction: column; }
 .brand strong { font: 800 21px "Manrope"; letter-spacing: .08em; }
 .brand small { opacity: .72; font-size: 12px; }
 .brand.large .brand-mark { width: 52px; height: 52px; }
+.brand.large .brand-logo { width: 220px; height: 70px; }
 .auth-page { min-height: 100vh; display: grid; grid-template-columns: 1.05fr .95fr; }
 .auth-hero { padding: 48px 8vw; color: white; background: radial-gradient(circle at 15% 85%, #2563eb 0, transparent 30%), radial-gradient(circle at 85% 10%, #1e40af 0, transparent 28%), #071d3b; display: flex; flex-direction: column; }
 .hero-copy { margin: auto 0; max-width: 560px; }

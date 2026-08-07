@@ -1,8 +1,9 @@
-import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth";
 import Notice from "../components/Notice";
+import logo from "../images/logo.png";
 
 export default function RegisterPage() {
   const { user, register } = useAuth();
@@ -22,7 +23,7 @@ export default function RegisterPage() {
     catch (err) { setError(err.message); }
     finally { setBusy(false); }
   };
-  return <div className="register-page"><header className="register-header"><div className="brand"><span className="brand-mark"><BookOpen /></span><span><strong>GAINT</strong><small>Interns Hub</small></span></div><Link to="/login"><ArrowLeft size={17} /> Back to login</Link></header>
+  return <div className="register-page"><header className="register-header"><div className="brand"><img className="brand-logo" src={logo} alt="GAINT Interns Hub" /></div><Link to="/login"><ArrowLeft size={17} /> Back to login</Link></header>
     <main className="register-card"><p className="eyebrow">INDIVIDUAL STUDENT REGISTRATION</p><h1>Start your internship journey</h1><p>Individual students register here and pay once after selecting a project. College students must use the login credentials supplied by their college Coordinator or GAINT Admin.</p><Notice type="error" message={error} />
       <form onSubmit={submit} className="form-grid">
         <label>Full name<input name="name" required minLength="2" placeholder="Your full name" /></label>

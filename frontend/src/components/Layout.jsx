@@ -1,5 +1,6 @@
-import { BookOpen, LogOut, ShieldCheck } from "lucide-react";
+import { LogOut, ShieldCheck } from "lucide-react";
 import { useAuth } from "../auth";
+import logo from "../images/logo.png";
 
 export default function Layout({ title, subtitle, children, actions }) {
   const { user, logout } = useAuth();
@@ -7,8 +8,7 @@ export default function Layout({ title, subtitle, children, actions }) {
     <div className="shell">
       <aside className="sidebar">
         <div className="brand">
-          <span className="brand-mark"><BookOpen size={24} /></span>
-          <span><strong>GAINT</strong><small>Interns Hub</small></span>
+          <img className="brand-logo" src={logo} alt="GAINT Interns Hub" />
         </div>
         <div className="profile-card">
           <div className="avatar">{user?.name?.charAt(0).toUpperCase()}</div>
@@ -30,4 +30,3 @@ export default function Layout({ title, subtitle, children, actions }) {
     </div>
   );
 }
-

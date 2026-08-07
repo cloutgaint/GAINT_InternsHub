@@ -286,3 +286,11 @@ chatbot replies and history, local project evidence, automatic certificate,
 college credentials/MOU isolation, sequential unlocking, aggregate mentor
 permissions, college Frontend/Backend teams, project generation, secret/path
 protection, and removal of Git/manual Task ID inputs.
+
+*BE commands*
+
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
