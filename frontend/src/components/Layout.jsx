@@ -12,17 +12,29 @@ export default function Layout({ title, subtitle, children, actions }) {
         </div>
         <div className="profile-card">
           <div className="avatar">{user?.name?.charAt(0).toUpperCase()}</div>
-          <div><strong>{user?.name}</strong><small>{user?.role}</small></div>
+          <div>
+            <strong>{user?.name}</strong>
+            <small>{user?.role}</small>
+          </div>
         </div>
         <div className="side-message">
           <ShieldCheck size={20} />
-          <div><strong>College Program</strong><small>Free internship access</small></div>
+          <div>
+            <strong>College Program</strong>
+            <small>Free internship access</small>
+          </div>
         </div>
-        <button className="logout-button" onClick={logout}><LogOut size={18} /> Logout</button>
+        <button className="logout-button" onClick={logout}>
+          <LogOut size={18} /> Logout
+        </button>
       </aside>
       <main className="main-content">
         <header className="page-header">
-          <div><p className="eyebrow">GAINT INTERNS HUB</p><h1>{title}</h1><p>{subtitle}</p></div>
+          <div>
+            <p className="eyebrow">GAINT INTERNS HUB</p>
+            <h1>{title}</h1>
+            <p>{subtitle}</p>
+          </div>
           {actions && <div className="header-actions">{actions}</div>}
         </header>
         {children}
