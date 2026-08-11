@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: gaint
       POSTGRES_PASSWORD: gaint_local_password
     ports:
-      - "55432:5432"
+      - "55432:5435"
     volumes:
       - gaint_v8_1_postgres_data:/var/lib/postgresql/data
     healthcheck:
