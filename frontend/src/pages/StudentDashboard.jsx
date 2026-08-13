@@ -27,6 +27,7 @@ const typeLabel = {
   "45_DAYS": "45 Days",
   SEMESTER: "Semester",
 };
+const selectableProjectTracks = (project) => project.available_tracks || [];
 const studentStartSteps = [
   [
     "Install VS Code once",
@@ -82,7 +83,6 @@ export default function StudentDashboard() {
   const [openTask, setOpenTask] = useState(null);
   const [notice, setNotice] = useState({});
   const [busy, setBusy] = useState(false);
-  const [trackChoices, setTrackChoices] = useState({});
   const [acceptedPaymentPolicy, setAcceptedPaymentPolicy] = useState(false);
   const [aiHelpByTask, setAiHelpByTask] = useState({});
   const [aiHelpLoading, setAiHelpLoading] = useState(null);
@@ -142,29 +142,6 @@ export default function StudentDashboard() {
     }
   };
 
-  const verifyContact = async (event) => {
-    event.preventDefault();
-    setBusy(true);
-    try {
-      await api("/auth/verify-contact", {
-        method: "POST",
-        body: JSON.stringify(
-          Object.fromEntries(new FormData(event.currentTarget)),
-        ),
-      });
-      await refreshUser();
-      await load();
-      setNotice({
-        type: "success",
-        message: "Email and mobile verified. Continue with internship setup.",
-      });
-    } catch (error) {
-      setNotice({ type: "error", message: error.message });
-    } finally {
-      setBusy(false);
-    }
-  };
-
   const savePreferences = async (event) => {
     event.preventDefault();
     setBusy(true);
@@ -191,10 +168,11 @@ export default function StudentDashboard() {
   const chooseProject = async (project) => {
     setBusy(true);
     try {
-      const selectedTrack =
-        trackChoices[project.id] ||
-        project.available_tracks?.[0] ||
-        "FULL_STACK";
+      const availableTracks = selectableProjectTracks(project);
+      const selectedTrack = availableTracks[0];
+      if (!selectedTrack) {
+        throw new Error("This project has no selectable track. Ask Admin to add a track.");
+      }
       const result = await api(`/student/projects/${project.id}/select`, {
         method: "POST",
         body: JSON.stringify({ selected_track: selectedTrack }),
@@ -399,39 +377,6 @@ export default function StudentDashboard() {
             />
             <button className="primary-button" disabled={busy}>
               Change password
-            </button>
-          </form>
-        </section>
-      </Layout>
-    );
-
-  if (!dashboard.user.email_verified || !dashboard.user.mobile_verified)
-    return (
-      <Layout
-        title="Verify your contact details"
-        subtitle="Verification protects your individual internship account."
-      >
-        <Notice {...notice} onClose={() => setNotice({})} />
-        <section className="panel setup-panel">
-          <div>
-            <p className="eyebrow">ACCOUNT VERIFICATION</p>
-            <h2>Enter the verification code</h2>
-            <p>
-              Local demo code: <strong>123456</strong>. Connect an email/SMS
-              provider before production.
-            </p>
-          </div>
-          <form className="mini-form" onSubmit={verifyContact}>
-            <input
-              name="code"
-              inputMode="numeric"
-              minLength="4"
-              maxLength="12"
-              required
-              placeholder="Verification code"
-            />
-            <button className="primary-button" disabled={busy}>
-              Verify and continue
             </button>
           </form>
         </section>
@@ -663,7 +608,9 @@ export default function StudentDashboard() {
               </div>
             ) : (
               <div className="project-grid">
-                {projects.map((project) => (
+                {projects.map((project) => {
+                  const availableTracks = selectableProjectTracks(project);
+                  return (
                   <article className="project-card" key={project.id}>
                     <div className="project-pills">
                       <span className="language-pill">
@@ -681,39 +628,18 @@ export default function StudentDashboard() {
                         <li key={feature}>{feature}</li>
                       ))}
                     </ul>
-                    <label>
-                      Project track
-                      <select
-                        value={
-                          trackChoices[project.id] ||
-                          project.available_tracks?.[0] ||
-                          "FULL_STACK"
-                        }
-                        onChange={(event) =>
-                          setTrackChoices({
-                            ...trackChoices,
-                            [project.id]: event.target.value,
-                          })
-                        }
-                      >
-                        {(project.available_tracks || ["FULL_STACK"]).map(
-                          (track) => (
-                            <option value={track} key={track}>
-                              {track.replaceAll("_", " ")}
-                            </option>
-                          ),
-                        )}
-                      </select>
-                    </label>
                     <button
                       className="primary-button"
                       onClick={() => chooseProject(project)}
-                      disabled={busy}
+                      disabled={busy || availableTracks.length === 0}
                     >
-                      Select project
+                      {availableTracks.length === 0
+                        ? "No track available"
+                        : "Select project"}
                     </button>
                   </article>
-                ))}
+                  );
+                })}
               </div>
             )}
           </section>

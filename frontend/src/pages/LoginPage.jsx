@@ -64,9 +64,9 @@ export default function LoginPage() {
           <img className="brand-logo" src={logo} alt="GAINT Interns Hub" />
         </div>
         <div className="hero-copy">
-          <span className="free-pill">
+          {/* <span className="free-pill">
             FREE FOR COLLEGE STUDENTS · ONE PAYMENT FOR INDIVIDUALS
-          </span>
+          </span> */}
           <h1>
             Learn. Build.
             <br />
@@ -144,10 +144,10 @@ export default function LoginPage() {
                 Individual student?{" "}
                 <Link to="/register">Create an account</Link>
               </p>
-              <p className="demo-note">
+              {/* <p className="demo-note">
                 College students log in with Admin-provided credentials. Demo
                 student credentials are filled automatically.
-              </p>
+              </p> */}
             </>
           )}
           {role !== "student" && (
