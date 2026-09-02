@@ -105,9 +105,8 @@ Compose project and does not set a fixed container name.
 | Demo Coordinator | `coordinator@gaint.com` | `Coordinator@123` |
 | Demo College Student | `student@gaint.com` | `Student@123` |
 
-The demo verification code is `123456`. Change all demo passwords, the
-`SECRET_KEY`, payment mode, verification mode and Judge0 configuration before
-production.
+Change all demo passwords, the `SECRET_KEY`, payment mode and Judge0
+configuration before production.
 
 ## Individual payments
 
@@ -298,6 +297,6 @@ protection, and removal of Git/manual Task ID inputs.
 
 cd backend
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate   // .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload

@@ -700,8 +700,8 @@ export default function AdminDashboard() {
                 <input
                   name="available_tracks"
                   required
-                  defaultValue="FULL_STACK"
-                  placeholder="FRONTEND,BACKEND,FULL_STACK"
+                  defaultValue="FRONTEND,BACKEND"
+                  placeholder="FRONTEND,BACKEND"
                 />
               </label>
               <label className="full">

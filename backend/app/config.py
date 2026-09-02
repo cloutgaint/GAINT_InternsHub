@@ -44,8 +44,6 @@ class Settings:
     razorpay_key_secret: str = clean_secret(os.getenv("RAZORPAY_KEY_SECRET", ""))
     razorpay_webhook_secret: str = clean_secret(os.getenv("RAZORPAY_WEBHOOK_SECRET", ""))
     razorpay_api_url: str = os.getenv("RAZORPAY_API_URL", "https://api.razorpay.com/v1").rstrip("/")
-    verification_mode: str = os.getenv("VERIFICATION_MODE", "demo").lower()
-    demo_verification_code: str = os.getenv("DEMO_VERIFICATION_CODE", "123456")
     judge0_url: str = os.getenv("JUDGE0_URL", "https://ce.judge0.com").rstrip("/")
     judge0_auth_header: str = os.getenv("JUDGE0_AUTH_HEADER", "X-Auth-Token")
     judge0_auth_token: str = os.getenv("JUDGE0_AUTH_TOKEN", "")

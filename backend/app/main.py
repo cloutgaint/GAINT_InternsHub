@@ -72,7 +72,6 @@ from .schemas import (
     TeamCreateRequest,
     TaskCreateRequest,
     TECHNOLOGIES,
-    VerifyContactRequest,
     WorkspaceBootstrapRequest,
 )
 from .security import create_token, hash_password, verify_password
@@ -783,25 +782,10 @@ def change_password(payload: ChangePasswordRequest, user: User = Depends(get_cur
     return public_user(user)
 
 
-@app.post("/api/auth/verify-contact")
-def verify_contact(payload: VerifyContactRequest, user: User = Depends(require_role("student")), db: Session = Depends(get_db)):
-    if settings.verification_mode != "demo":
-        raise HTTPException(status_code=501, detail="Connect the configured email/SMS verification provider")
-    if not secrets.compare_digest(payload.code, settings.demo_verification_code):
-        raise HTTPException(status_code=400, detail="Verification code is incorrect")
-    user.email_verified = True
-    user.mobile_verified = True
-    audit(db, user.id, "CONTACT_VERIFIED", "user", user.id, mode="demo")
-    db.commit()
-    return public_user(user)
-
-
 @app.put("/api/student/preferences")
 def update_preferences(payload: PreferencesRequest, user: User = Depends(require_role("student")), db: Session = Depends(get_db)):
     if user.must_change_password:
         raise HTTPException(status_code=403, detail="Change the temporary password before continuing")
-    if not user.email_verified or not user.mobile_verified:
-        raise HTTPException(status_code=403, detail="Verify your email and mobile before continuing")
     user.preferred_language = payload.preferred_language
     user.area_interest = payload.area_interest.strip()
     if payload.internship_type:

@@ -47,10 +47,6 @@ class ChangePasswordRequest(BaseModel):
     new_password: str = Field(min_length=8, max_length=128)
 
 
-class VerifyContactRequest(BaseModel):
-    code: str = Field(min_length=4, max_length=12)
-
-
 class MentorCreateRequest(BaseModel):
     name: str = Field(min_length=2, max_length=120)
     email: EmailStr

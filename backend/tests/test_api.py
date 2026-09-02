@@ -52,8 +52,6 @@ def register_individual(client: TestClient, email: str, internship_type: str = "
     })
     assert response.status_code == 201, response.text
     assert response.json()["user"]["enrollment_type"] == "INDIVIDUAL"
-    verified = client.post("/api/auth/verify-contact", headers=auth(response.json()["token"]), json={"code": "123456"})
-    assert verified.status_code == 200 and verified.json()["email_verified"] is True
     return response.json()
 
 
