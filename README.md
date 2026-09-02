@@ -131,6 +131,13 @@ RAZORPAY_KEY_SECRET=your_test_key_secret
 RAZORPAY_WEBHOOK_SECRET=your_separate_webhook_secret
 ```
 
+For a live deployment, create or reveal a fresh **Live Mode** key pair and add
+both values to the backend service's environment (not the frontend). The key ID
+and secret must come from the same generated pair and the same Razorpay mode;
+mixing a test key with a live secret returns HTTP 401. Redeploy or restart the
+backend after updating them. Do not include shell-style quotes in a hosting
+dashboard's value field.
+
 Restart the backend after changing these values. The student button becomes
 **Pay securely**, the backend creates the Razorpay order, Checkout opens, and
 the backend verifies the signature, order, amount, currency and captured status

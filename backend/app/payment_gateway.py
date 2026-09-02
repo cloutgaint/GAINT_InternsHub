@@ -44,6 +44,11 @@ def _request(path: str, method: str = "GET", payload: dict | None = None) -> dic
             detail = body.get("error", {}).get("description") or "Razorpay rejected the request"
         except (json.JSONDecodeError, AttributeError):
             detail = "Razorpay rejected the request"
+        if exc.code == 401:
+            raise RazorpayError(
+                "Razorpay authentication failed. Update the live backend with a matching, active "
+                "RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET from the same Razorpay mode, then restart it."
+            ) from exc
         raise RazorpayError(f"{detail} (HTTP {exc.code})") from exc
     except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
         raise RazorpayError(f"Razorpay is currently unavailable: {exc}") from exc

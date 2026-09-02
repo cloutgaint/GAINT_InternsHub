@@ -11,6 +11,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 
+def clean_secret(value: str) -> str:
+    """Normalize secrets copied from hosting dashboards.
+
+    Unlike dotenv files, most deployment dashboards preserve surrounding
+    whitespace and quote characters. Either makes HTTP Basic authentication
+    fail even when the visible Razorpay credentials look correct.
+    """
+    value = value.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+        value = value[1:-1].strip()
+    return value
+
+
 @dataclass(frozen=True)
 class Settings:
     app_name: str = os.getenv("APP_NAME", "GAINT Interns Hub")
@@ -27,9 +40,9 @@ class Settings:
     # the private VS Code device connection does not expire by default.
     workspace_bootstrap_minutes: int = int(os.getenv("WORKSPACE_BOOTSTRAP_MINUTES", "43200"))
     payment_provider: str = os.getenv("PAYMENT_PROVIDER", "demo").lower()
-    razorpay_key_id: str = os.getenv("RAZORPAY_KEY_ID", "")
-    razorpay_key_secret: str = os.getenv("RAZORPAY_KEY_SECRET", "")
-    razorpay_webhook_secret: str = os.getenv("RAZORPAY_WEBHOOK_SECRET", "")
+    razorpay_key_id: str = clean_secret(os.getenv("RAZORPAY_KEY_ID", ""))
+    razorpay_key_secret: str = clean_secret(os.getenv("RAZORPAY_KEY_SECRET", ""))
+    razorpay_webhook_secret: str = clean_secret(os.getenv("RAZORPAY_WEBHOOK_SECRET", ""))
     razorpay_api_url: str = os.getenv("RAZORPAY_API_URL", "https://api.razorpay.com/v1").rstrip("/")
     verification_mode: str = os.getenv("VERIFICATION_MODE", "demo").lower()
     demo_verification_code: str = os.getenv("DEMO_VERIFICATION_CODE", "123456")

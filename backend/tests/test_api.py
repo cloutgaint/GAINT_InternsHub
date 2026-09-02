@@ -21,6 +21,13 @@ os.environ["AI_PROVIDER"] = "safe-local"
 from fastapi.testclient import TestClient  # noqa: E402
 
 from app.main import app  # noqa: E402
+from app.config import clean_secret  # noqa: E402
+
+
+def test_deployment_secrets_are_normalized():
+    assert clean_secret("  rzp_live_example\n") == "rzp_live_example"
+    assert clean_secret("'live-secret' ") == "live-secret"
+    assert clean_secret('\"live-secret\"') == "live-secret"
 
 
 def auth(token: str) -> dict:
