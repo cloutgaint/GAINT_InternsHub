@@ -46,6 +46,12 @@ the certificate and creates a clean, runnable local-project ZIP.
 
 The program controls project depth, not an artificial waiting timer.
 
+## Production deployment
+
+Production-ready Docker images and a separate Compose stack are included. See
+[DEPLOYMENT.md](DEPLOYMENT.md) for environment setup, HTTPS, health checks,
+persistent storage, payment webhooks, updates, and rollback guidance.
+
 ## Project tracks
 
 An uploaded complete project is analysed for available tracks. A student can

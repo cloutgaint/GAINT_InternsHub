@@ -46,6 +46,9 @@ htmlcov/
 logs/
 instance/
 
+# Runtime-generated student/project archives
+backend/uploads/*.zip
+
 # ==========================
 # Node.js / React
 # ==========================

@@ -87,6 +87,7 @@ INDIA_TZ = ZoneInfo("Asia/Kolkata")
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    settings.validate_production()
     Base.metadata.create_all(engine)
     # create_all() does not add columns to an existing PostgreSQL volume.
     # Keep V7/V8 local installations compatible with the learning assistant.
@@ -133,14 +134,22 @@ async def lifespan(_: FastAPI):
                             f"ALTER TABLE judge_runs ADD COLUMN {name} {definition}"
                         ))
     with SessionLocal() as db:
-        seed_database(db)
+        seed_database(
+            db,
+            include_demo_users=settings.seed_demo_data,
+            bootstrap_admin_email=settings.bootstrap_admin_email,
+            bootstrap_admin_password=settings.bootstrap_admin_password,
+        )
     yield
 
 
 app = FastAPI(title=settings.app_name, version="8.1.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_url, "http://127.0.0.1:5173"],
+    allow_origins=list(dict.fromkeys([
+        *settings.frontend_urls,
+        *([] if settings.environment == "production" else ["http://127.0.0.1:5173"]),
+    ])),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -705,8 +714,9 @@ def root():
 
 
 @app.get("/api/health")
-def health():
-    return {"status": "healthy"}
+def health(db: Session = Depends(get_db)):
+    db.execute(select(1))
+    return {"status": "healthy", "database": "connected"}
 
 
 @app.get("/api/judge0/health")
@@ -802,9 +812,12 @@ def update_preferences(payload: PreferencesRequest, user: User = Depends(require
             raise HTTPException(
                 status_code=409,
                 detail="Technology and internship type cannot change after project access is activated",
-            )
+        )
         old_project_id = existing.project_id
         db.delete(payment)
+        # Payment references the assignment. Flush its deletion first so this
+        # works with PostgreSQL foreign-key enforcement (not only SQLite tests).
+        db.flush()
         db.delete(existing)
         user.project_id = None
         user.learning_started_at = None

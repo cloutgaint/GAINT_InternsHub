@@ -26,6 +26,7 @@ def clean_secret(value: str) -> str:
 
 @dataclass(frozen=True)
 class Settings:
+    environment: str = os.getenv("ENVIRONMENT", "development").lower()
     app_name: str = os.getenv("APP_NAME", "GAINT Interns Hub")
     secret_key: str = os.getenv("SECRET_KEY", "development-only-change-me")
     database_url: str = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'gaint_interns_v8.db'}")
@@ -66,6 +67,32 @@ class Settings:
         1, min(10, int(os.getenv("PROJECT_EVIDENCE_MAX_MB", "3")))
     )
     upload_dir: Path = BASE_DIR / "uploads"
+    seed_demo_data: bool = os.getenv("SEED_DEMO_DATA", "true").lower() in {"1", "true", "yes", "on"}
+    bootstrap_admin_email: str = os.getenv("BOOTSTRAP_ADMIN_EMAIL", "").strip().lower()
+    bootstrap_admin_password: str = clean_secret(os.getenv("BOOTSTRAP_ADMIN_PASSWORD", ""))
+
+    @property
+    def frontend_urls(self) -> list[str]:
+        return [value.strip().rstrip("/") for value in self.frontend_url.split(",") if value.strip()]
+
+    def validate_production(self) -> None:
+        if self.environment != "production":
+            return
+        errors = []
+        if len(self.secret_key) < 32 or "change-me" in self.secret_key.lower():
+            errors.append("SECRET_KEY must be a random value of at least 32 characters")
+        if not self.frontend_urls or any(not url.startswith("https://") for url in self.frontend_urls):
+            errors.append("FRONTEND_URL must contain public HTTPS URL(s)")
+        if not self.public_api_url.startswith("https://"):
+            errors.append("PUBLIC_API_URL must be a public HTTPS URL")
+        if not self.bootstrap_admin_email or len(self.bootstrap_admin_password) < 12:
+            errors.append("set BOOTSTRAP_ADMIN_EMAIL and a BOOTSTRAP_ADMIN_PASSWORD of at least 12 characters")
+        if self.payment_provider == "razorpay" and not all(
+            (self.razorpay_key_id, self.razorpay_key_secret, self.razorpay_webhook_secret)
+        ):
+            errors.append("Razorpay mode requires key ID, key secret, and webhook secret")
+        if errors:
+            raise RuntimeError("Invalid production configuration: " + "; ".join(errors))
 
 
 settings = Settings()

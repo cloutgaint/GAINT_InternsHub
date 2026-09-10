@@ -15,12 +15,21 @@ def add_tasks(db: Session, project: Project) -> None:
         db.add(Task(project_id=project.id, **spec))
 
 
-def seed_database(db: Session) -> None:
-    for name, email, password, role in [
+def seed_database(
+    db: Session,
+    *,
+    include_demo_users: bool = True,
+    bootstrap_admin_email: str = "",
+    bootstrap_admin_password: str = "",
+) -> None:
+    demo_users = [
         ("GAINT Administrator", "admin@gaint.com", "Admin@123", "admin"),
         ("GAINT Mentor", "mentor@gaint.com", "Mentor@123", "mentor"),
         ("Demo College Coordinator", "coordinator@gaint.com", "Coordinator@123", "coordinator"),
-    ]:
+    ] if include_demo_users else []
+    if bootstrap_admin_email and bootstrap_admin_password:
+        demo_users.append(("GAINT Administrator", bootstrap_admin_email, bootstrap_admin_password, "admin"))
+    for name, email, password, role in demo_users:
         if not db.scalar(select(User).where(User.email == email)):
             db.add(User(
                 name=name, email=email, password_hash=hash_password(password), role=role,
@@ -53,7 +62,7 @@ def seed_database(db: Session) -> None:
                 add_tasks(db, project)
     db.commit()
 
-    coordinator = db.scalar(select(User).where(User.email == "coordinator@gaint.com"))
+    coordinator = db.scalar(select(User).where(User.email == "coordinator@gaint.com")) if include_demo_users else None
     admin = db.scalar(select(User).where(User.email == "admin@gaint.com"))
     if coordinator and not db.scalar(select(MouAccess).where(MouAccess.coordinator_id == coordinator.id)):
         project_ids = list(db.scalars(select(Project.id).where(Project.status == "PUBLISHED")).all())

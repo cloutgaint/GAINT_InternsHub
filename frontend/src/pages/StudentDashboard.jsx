@@ -171,6 +171,13 @@ export default function StudentDashboard() {
     }
   };
 
+  const savePreferenceSelection = (event) => {
+    // A stack/program selection should immediately drive the dashboard summary
+    // and matching project library; the form button remains useful for edits to
+    // the free-text area of interest.
+    event.currentTarget.form?.requestSubmit();
+  };
+
   const chooseProject = async (project) => {
     setBusy(true);
     try {
@@ -555,6 +562,8 @@ export default function StudentDashboard() {
                 name="internship_type"
                 required
                 defaultValue={dashboard.user.internship_type || ""}
+                onChange={savePreferenceSelection}
+                disabled={busy}
               >
                 <option value="" disabled>
                   Select internship
@@ -570,6 +579,8 @@ export default function StudentDashboard() {
                 name="preferred_language"
                 required
                 defaultValue={dashboard.user.preferred_language || ""}
+                onChange={savePreferenceSelection}
+                disabled={busy}
               >
                 <option value="" disabled>
                   Select technology

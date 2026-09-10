@@ -2288,6 +2288,7 @@ body {
     flex-direction: column;
   }
   .student-stats,
+  .student-stats.three,
   .metric-grid,
   .admin-metrics {
     grid-template-columns: 1fr 1fr;
@@ -2335,6 +2336,7 @@ body {
   }
   .form-grid,
   .student-stats,
+  .student-stats.three,
   .student-stats.four,
   .metric-grid,
   .admin-metrics,

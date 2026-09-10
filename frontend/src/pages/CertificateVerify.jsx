@@ -3,6 +3,9 @@ import { useParams } from "react-router-dom";
 
 export default function CertificateVerify() {
   const { certificateNo } = useParams();
+  const verificationBaseUrl =
+    import.meta.env.VITE_CERTIFICATE_VERIFY_BASE_URL ||
+    `${import.meta.env.VITE_API_URL || "http://localhost:8000/api"}/certificates/verify`;
   const [state, setState] = useState({
     loading: true,
     data: null,
@@ -17,7 +20,7 @@ export default function CertificateVerify() {
 
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_CERTIFICATE_VERIFY_BASE_URL}/${encodeURIComponent(certificateNo)}`,
+          `${verificationBaseUrl}/${encodeURIComponent(certificateNo)}`,
           {
             signal: controller.signal,
             headers: { Accept: "application/json" },
@@ -60,7 +63,7 @@ export default function CertificateVerify() {
 
     verify();
     return () => controller.abort();
-  }, [certificateNo]);
+  }, [certificateNo, verificationBaseUrl]);
 
   const { loading, data, error } = state;
   const valid = data?.valid === true;
