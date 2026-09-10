@@ -42,6 +42,10 @@ const studentStartSteps = [
     "Inside the extracted folder, double-click OPEN_IN_VSCODE.bat. It installs the included GAINT extension automatically and opens the project.",
   ],
   [
+    "Install required packages",
+    "Before running or submitting the project, run the setup command in README_SETUP.md (or START_PROJECT.bat) and confirm all required packages install successfully.",
+  ],
+  [
     "Read before coding",
     "Open CURRENT_TASK.md, read the red Current Task Question in this dashboard, and edit the required file inside gaint_checkpoints.",
   ],
@@ -785,6 +789,14 @@ export default function StudentDashboard() {
                   <Check size={16} /> Guide completed
                 </span>
               )}
+            </div>
+            <div className="mandatory-setup-note" role="note">
+              <strong>Mandatory before project execution and submission</strong>
+              <p>
+                Install the included GAINT VS Code extension by running
+                OPEN_IN_VSCODE.bat, then install all required project packages.
+                Submission will not work correctly until both steps are complete.
+              </p>
             </div>
             <div className="student-guide-steps">
               {studentStartSteps.map(([title, description], index) => (

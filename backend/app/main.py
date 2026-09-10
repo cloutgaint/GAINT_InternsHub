@@ -1136,6 +1136,7 @@ def student_guide(user: User = Depends(require_role("student")), db: Session = D
             "Install Visual Studio Code once from code.visualstudio.com/download",
             "Download the project ZIP and use Extract All; never work inside the ZIP",
             "Double-click OPEN_IN_VSCODE.bat; it installs the GAINT extension and opens the correct folder",
+            "Run the setup command in README_SETUP.md or START_PROJECT.bat and install every required package before execution or submission",
             "Read CURRENT_TASK.md and the red Current Task Question before writing code",
             "Test the required checkpoint and real project modules in the VS Code terminal",
             "Press Ctrl+Shift+P and run GAINT: Submit Current Task; no token, Task ID or Git is required",

@@ -1,5 +1,9 @@
 # Student Quick Start
 
+> **Mandatory:** Install and verify the included GAINT VS Code extension and
+> install all required project packages before project execution or submission.
+> Both are required for submission to work correctly.
+
 1. Install Visual Studio Code once from
    `https://code.visualstudio.com/download`.
 2. Complete project selection (and payment only if you are an individual
@@ -9,13 +13,15 @@
 5. Open the extracted folder and double-click `OPEN_IN_VSCODE.bat`. It installs
    and verifies the included GAINT extension and opens the correct project
    folder automatically. Do not run a separate extension installer.
-6. Open `CURRENT_TASK.md` and read the red Current Task Question in the portal.
-7. Update the listed real project modules and the current file inside
+6. Follow `README_SETUP.md` or run `START_PROJECT.bat` to install all required
+   project packages. Resolve installation errors before submitting.
+7. Open `CURRENT_TASK.md` and read the red Current Task Question in the portal.
+8. Update the listed real project modules and the current file inside
    `gaint_checkpoints`.
-8. Test the code in the VS Code terminal.
-9. Press `Ctrl+Shift+P` and run `GAINT: Submit Current Task`.
-10. Correct and retry if a check fails. A pass unlocks the next task.
-11. After the final pass, download the certificate from the portal. The clean
+9. Test the code in the VS Code terminal.
+10. Press `Ctrl+Shift+P` and run `GAINT: Submit Current Task`.
+11. Correct and retry if a check fails. A pass unlocks the next task.
+12. After the final pass, download the certificate from the portal. The clean
     runnable completed-project ZIP is created beside your project folder only
     after the final whole-project checks pass.
 

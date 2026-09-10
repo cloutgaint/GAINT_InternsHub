@@ -291,17 +291,23 @@ def _student_guide(assignment, project, tasks) -> str:
 - Internship: {project.internship_type.replace("_", " ").title()}
 - Assignment reference: {assignment.variant_seed}
 
-## Start in six simple steps
+## Start in seven simple steps
+
+> **MANDATORY:** Install and verify the included GAINT VS Code extension, then
+> install every required project package before project execution or submission.
+> Submission will not work correctly until both steps are complete.
 
 1. Install Visual Studio Code once from `https://code.visualstudio.com/download`.
 2. Download the project ZIP, right-click it and choose **Extract All**. Do not
    work inside the ZIP.
 3. Open the extracted folder and double-click `OPEN_IN_VSCODE.bat`. It installs
    the included GAINT extension automatically and opens the correct folder.
-4. Read `CURRENT_TASK.md`, then write your solution in the required
+4. Run the setup command in `README_SETUP.md` (or `START_PROJECT.bat`) and
+   confirm all required packages install successfully.
+5. Read `CURRENT_TASK.md`, then write your solution in the required
    `gaint_checkpoints/task_N` file and update the listed real project modules.
-5. Test the code in the VS Code terminal.
-6. Press `Ctrl+Shift+P` and run `GAINT: Submit Current Task`.
+6. Test the code in the VS Code terminal.
+7. Press `Ctrl+Shift+P` and run `GAINT: Submit Current Task`.
 
 The workspace connects automatically. Do not copy a token, enter a Task ID, use
 Git, or upload the complete project.
