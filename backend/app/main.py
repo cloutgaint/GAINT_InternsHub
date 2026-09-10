@@ -786,12 +786,33 @@ def change_password(payload: ChangePasswordRequest, user: User = Depends(get_cur
 def update_preferences(payload: PreferencesRequest, user: User = Depends(require_role("student")), db: Session = Depends(get_db)):
     if user.must_change_password:
         raise HTTPException(status_code=403, detail="Change the temporary password before continuing")
+    existing = get_assignment(db, user.id)
+    preferences_changed = (
+        user.preferred_language != payload.preferred_language
+        or user.internship_type != payload.internship_type
+    )
+    if existing and preferences_changed:
+        payment = db.scalar(select(Payment).where(Payment.assignment_id == existing.id))
+        if (
+            user.enrollment_type != "INDIVIDUAL"
+            or existing.access_status != "PAYMENT_PENDING"
+            or not payment
+            or payment.status != "PENDING"
+        ):
+            raise HTTPException(
+                status_code=409,
+                detail="Technology and internship type cannot change after project access is activated",
+            )
+        old_project_id = existing.project_id
+        db.delete(payment)
+        db.delete(existing)
+        user.project_id = None
+        user.learning_started_at = None
+        db.flush()
+        audit(db, user.id, "UNPAID_PROJECT_SELECTION_CLEARED", "project", old_project_id, reason="preferences_changed")
     user.preferred_language = payload.preferred_language
-    user.area_interest = payload.area_interest.strip()
-    if payload.internship_type:
-        if user.project_id and user.internship_type != payload.internship_type:
-            raise HTTPException(status_code=409, detail="Internship type cannot change after selecting a project")
-        user.internship_type = payload.internship_type
+    user.area_interest = payload.area_interest
+    user.internship_type = payload.internship_type
     db.commit()
     db.refresh(user)
     return public_user(user)

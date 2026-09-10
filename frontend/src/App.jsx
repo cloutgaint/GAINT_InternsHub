@@ -6,6 +6,7 @@ import StudentDashboard from "./pages/StudentDashboard";
 import MentorDashboard from "./pages/MentorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import CoordinatorDashboard from "./pages/CoordinatorDashboard";
+import CertificateVerify from "./pages/CertificateVerify";
 
 function ProtectedRoute({ role, children }) {
   const { user, loading } = useAuth();
@@ -24,6 +25,7 @@ function HomeRedirect() {
 export default function App() {
   return (
     <Routes>
+      <Route path="/verify/:certificateNo" element={<CertificateVerify />} />
       <Route path="/" element={<HomeRedirect />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />

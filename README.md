@@ -296,7 +296,7 @@ protection, and removal of Git/manual Task ID inputs.
 *BE commands*
 
 cd backend
-python3 -m venv venv
+source venv/bin/activate
 source venv/bin/activate   // .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload

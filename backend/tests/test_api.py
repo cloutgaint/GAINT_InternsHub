@@ -141,6 +141,23 @@ def test_individual_payment_vscode_and_automatic_certificate(monkeypatch):
         assert dashboard["attendance"] is None
         assert dashboard["assignment"]["payment"]["status"] == "PENDING"
         assert not dashboard["assignment"]["access_enabled"]
+
+        changed = client.put("/api/student/preferences", headers=headers, json={
+            "preferred_language": "Node.js", "area_interest": "APIs", "internship_type": "FASTTRACK",
+        })
+        assert changed.status_code == 200, changed.text
+        dashboard = client.get("/api/student/dashboard", headers=headers).json()
+        assert dashboard["assignment"] is None
+        assert dashboard["user"]["preferred_language"] == "Node.js"
+        projects = client.get("/api/student/projects", headers=headers).json()
+        assert projects and all(item["technology"] == "Node.js" for item in projects)
+        restored = client.put("/api/student/preferences", headers=headers, json={
+            "preferred_language": "Python", "area_interest": "AI services", "internship_type": "FASTTRACK",
+        })
+        assert restored.status_code == 200, restored.text
+        projects = client.get("/api/student/projects", headers=headers).json()
+        assert client.post(f"/api/student/projects/{projects[0]['id']}/select", headers=headers).status_code == 200
+        dashboard = client.get("/api/student/dashboard", headers=headers).json()
         assert client.get("/api/student/starter-project", headers=headers).status_code == 402
         assert client.post("/api/student/attendance/check-in", headers=headers).status_code == 403
 
@@ -157,6 +174,10 @@ def test_individual_payment_vscode_and_automatic_certificate(monkeypatch):
             json={"terms_accepted": True},
         )
         assert paid.status_code == 200 and paid.json()["receipt_number"].startswith("GAINT-RCPT-")
+        locked = client.put("/api/student/preferences", headers=headers, json={
+            "preferred_language": "Node.js", "area_interest": "APIs", "internship_type": "FASTTRACK",
+        })
+        assert locked.status_code == 409
         assert client.get("/api/student/starter-project", headers=headers).status_code == 409
 
         device_token, starter_content = download_and_connect_vscode(client, website_token)

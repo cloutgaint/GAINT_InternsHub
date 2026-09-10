@@ -145,18 +145,24 @@ export default function StudentDashboard() {
   const savePreferences = async (event) => {
     event.preventDefault();
     setBusy(true);
+    setNotice({});
     try {
+      const values = Object.fromEntries(new FormData(event.currentTarget));
+      values.area_interest = values.area_interest.trim();
+      if (values.area_interest.length < 2) {
+        throw new Error("Area of interest must contain at least 2 characters.");
+      }
       await api("/student/preferences", {
         method: "PUT",
-        body: JSON.stringify(
-          Object.fromEntries(new FormData(event.currentTarget)),
-        ),
+        body: JSON.stringify(values),
       });
       await refreshUser();
       await load();
       setNotice({
         type: "success",
-        message: "Internship and technology saved. Select your project.",
+        message: dashboard.assignment
+          ? "Technology updated. Your unpaid project selection was cleared; select a matching project."
+          : "Internship and technology saved. Select your project.",
       });
     } catch (error) {
       setNotice({ type: "error", message: error.message });
@@ -387,6 +393,11 @@ export default function StudentDashboard() {
   const isCollege = dashboard.user.enrollment_type === "COLLEGE";
   const setupMissing =
     !dashboard.user.preferred_language || !dashboard.user.internship_type;
+  const canEditPreferences =
+    !assignment ||
+    (!isCollege &&
+      !assignment.access_enabled &&
+      assignment.payment?.status === "PENDING");
   const currentTask = assignment?.tasks?.find(
     (task) => task.unlocked && task.status !== "PASSED",
   );
@@ -520,14 +531,21 @@ export default function StudentDashboard() {
         </section>
       )}
 
-      {setupMissing && (
+      {canEditPreferences && (
         <section className="panel setup-panel">
           <div>
-            <p className="eyebrow">STEP 1</p>
-            <h2>Select internship and technology</h2>
+            <p className="eyebrow">
+              {setupMissing ? "STEP 1" : "YOUR TECH STACK"}
+            </p>
+            <h2>
+              {setupMissing
+                ? "Select internship and technology"
+                : "Edit internship and technology"}
+            </h2>
             <p>
-              This filters the project library and sets the number of sequential
-              milestones.
+              {assignment
+                ? "You can change these before payment. Changing either one clears the unpaid project selection so you can choose a matching project."
+                : "This filters the project library and sets the number of sequential milestones."}
             </p>
           </div>
           <form onSubmit={savePreferences} className="inline-form">
@@ -548,7 +566,11 @@ export default function StudentDashboard() {
             </label>
             <label>
               Technology
-              <select name="preferred_language" required defaultValue="">
+              <select
+                name="preferred_language"
+                required
+                defaultValue={dashboard.user.preferred_language || ""}
+              >
                 <option value="" disabled>
                   Select technology
                 </option>
@@ -564,11 +586,14 @@ export default function StudentDashboard() {
               <input
                 name="area_interest"
                 required
+                minLength="2"
+                maxLength="250"
+                defaultValue={dashboard.user.area_interest || ""}
                 placeholder="Education, healthcare, AI…"
               />
             </label>
             <button className="primary-button" disabled={busy}>
-              Save and continue
+              {assignment ? "Save changes" : "Save and continue"}
             </button>
           </form>
         </section>

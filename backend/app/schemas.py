@@ -16,15 +16,32 @@ class LoginRequest(BaseModel):
 
 
 class PreferencesRequest(BaseModel):
-    preferred_language: str
+    preferred_language: str = Field(min_length=1, max_length=40)
     area_interest: str = Field(min_length=2, max_length=250)
-    internship_type: str | None = None
+    internship_type: str = Field(min_length=1, max_length=30)
 
     @field_validator("preferred_language")
     @classmethod
     def validate_technology(cls, value: str) -> str:
+        value = value.strip()
         if value not in TECHNOLOGIES:
             raise ValueError("Select a supported technology")
+        return value
+
+    @field_validator("area_interest")
+    @classmethod
+    def validate_area_interest(cls, value: str) -> str:
+        value = value.strip()
+        if len(value) < 2:
+            raise ValueError("Area of interest must contain at least 2 characters")
+        return value
+
+    @field_validator("internship_type")
+    @classmethod
+    def validate_internship_type(cls, value: str) -> str:
+        value = value.strip().upper()
+        if value not in INTERNSHIP_TYPES:
+            raise ValueError("Select a supported internship type")
         return value
 
 
